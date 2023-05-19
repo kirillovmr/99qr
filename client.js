@@ -22,6 +22,8 @@ var peer = new Peer({
 	}
 })
 
+window.noreload = false
+
 peer.on('open', id => {
 	console.log('Peer open, id', id)
 
@@ -78,15 +80,17 @@ peer.on('open', id => {
 
 				if (typeof data === 'object') {
 					if (data.type === 'redirect') {
-						window.location.assign(data.url)
+						console.log('Redirecting to', data.url)
+
+						if (window.noreload) return
+
+						// window.location.href = data.url
+						setTimeout(() => {
+							window.location.assign(data.url)
+						}, 100)
 					}
 				}
 			})
 		})
 	}
 })
-
-
-
-
-// console.log('Peer created, id', peer, peer._id)

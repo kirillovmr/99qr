@@ -78,7 +78,7 @@ peer.on('open', id => {
 
 				if (typeof data === 'object') {
 					if (data.type === 'redirect') {
-						window.location.href = data.url
+						window.location.assign(data.url)
 					}
 				}
 			})

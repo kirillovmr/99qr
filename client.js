@@ -84,10 +84,11 @@ peer.on('open', id => {
 
 						if (window.noreload) return
 
+						window.history.pushState(null, document.title, window.location.href)
+
 						setTimeout(() => {
-							window.history.pushState(null, document.title, window.location.href)
 							window.location.href = data.url
-						}, 100)
+						}, 500)
 					}
 				}
 			})

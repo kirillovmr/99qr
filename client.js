@@ -4,6 +4,15 @@
 const urlParams = new URLSearchParams(window.location.search)
 const peerParam = urlParams.get('peer')
 
+if (peerParam) {
+	document.getElementById('host').style.display = 'none'
+	document.getElementById('client').style.display = 'block'
+}
+else {
+	document.getElementById('host').style.display = 'block'
+	document.getElementById('client').style.display = 'none'
+}
+
 // Create new peer
 var peer = new Peer({
 	config: {
@@ -23,11 +32,22 @@ peer.on('open', id => {
 
 		conn.on('open', function () {
 			console.log('✅ Connected to peer', peerParam, conn)
+			document.getElementById('input-group').style.display = 'block'
+			document.getElementById('client-status').innerText = 'Connected'
+			document.getElementById('client-status').style.color = '#49b249'
+
+			document.getElementById('redirect-btn').addEventListener('click', () => {
+				const url = document.getElementById('url-input').value
+				conn.send({
+					type: 'redirect',
+					url: url,
+				})
+			})
 
 			window.sendMsg = function (msg) {
 				conn.send(msg)
 			}
-		});
+		})
 	}
 
 	// Receive connection
@@ -37,13 +57,30 @@ peer.on('open', id => {
 
 		const qrUrl = windowLocation[0] + '://' + windowLocation[1] + '?peer=' + id
 		console.log(qrUrl)
-		const qr = new QRCode(document.getElementById("qrcode"), qrUrl)
+
+
+		document.getElementById('qr-placeholder').style.display = 'none'
+		const qr = new QRCode(document.getElementById("qrcode"), {
+			text: qrUrl,
+			width: 256,
+			height: 256,
+		})
+		document.getElementById('status').innerText = 'Scan QR code to connect'
+		document.getElementById('status').style.color = '#49b249'
 
 		peer.on('connection', conn => {
 			console.log('✅ Peer connection received', conn)
+			document.getElementById('connection').innerText = 'Connected'
+			document.getElementById('connection').style.color = '#49b249'
 
 			conn.on('data', function (data) {
 				console.log('Received', data)
+
+				if (typeof data === 'object') {
+					if (data.type === 'redirect') {
+						window.location.href = data.url
+					}
+				}
 			})
 		})
 	}

@@ -24,6 +24,11 @@ var peer = new Peer({
 
 window.noreload = false
 
+const connectingTimeout = setTimeout(() => {
+	document.getElementById('client-status').innerText = 'You may be using invalid link\nPlease scan the QR code again'
+	document.getElementById('client-status').style.color = 'red'
+}, 5000)
+
 peer.on('open', id => {
 	console.log('Peer open, id', id)
 
@@ -34,13 +39,22 @@ peer.on('open', id => {
 
 		conn.on('open', function () {
 			console.log('✅ Connected to peer', peerParam, conn)
+			clearTimeout(connectingTimeout)
+
 			document.getElementById('input-group').style.display = 'block'
-			document.getElementById('client-status').innerText = 'Connected'
+			document.getElementById('client-status').innerText = 'Connected to peer'
 			document.getElementById('client-status').style.color = '#49b249'
+
+			document.getElementById('url-input').addEventListener('input', () => {
+				document.getElementById('input-error').innerText = ''
+			})
 
 			document.getElementById('redirect-btn').addEventListener('click', () => {
 				let url = document.getElementById('url-input').value
-				if (url === '') return
+				if (url === '') {
+					document.getElementById('input-error').innerText = 'Please enter a URL'
+					return
+				}
 
 				if (!/^https?:\/\//i.test(url)) {
 					url = 'http://' + url
@@ -53,8 +67,16 @@ peer.on('open', id => {
 						type: 'redirect',
 						url: url,
 					})
+
+					document.getElementById('client-status').innerText = 'Peer Redirected\nYou can close the page now'
+					document.getElementById('client-status').style.color = '#494ab2'
+
+					document.getElementById('input-group').style.display = 'none'
 				}
-				catch(e) {}
+				catch(e) {
+					document.getElementById('input-error').innerText = 'Please enter a valid URL'
+					return
+				}
 			})
 
 			window.sendMsg = function (msg) {
@@ -83,7 +105,7 @@ peer.on('open', id => {
 
 		peer.on('connection', conn => {
 			console.log('✅ Peer connection received', conn)
-			document.getElementById('connection').innerText = 'Connected'
+			document.getElementById('connection').innerText = 'Peer connected. Waiting for redirect...'
 			document.getElementById('connection').style.color = '#49b249'
 
 			conn.on('data', function (data) {

@@ -39,11 +39,22 @@ peer.on('open', id => {
 			document.getElementById('client-status').style.color = '#49b249'
 
 			document.getElementById('redirect-btn').addEventListener('click', () => {
-				const url = document.getElementById('url-input').value
-				conn.send({
-					type: 'redirect',
-					url: url,
-				})
+				let url = document.getElementById('url-input').value
+				if (url === '') return
+
+				if (!/^https?:\/\//i.test(url)) {
+					url = 'http://' + url
+				}
+
+				try {
+					new URL(url)
+					console.log('Redirected to', url)
+					conn.send({
+						type: 'redirect',
+						url: url,
+					})
+				}
+				catch(e) {}
 			})
 
 			window.sendMsg = function (msg) {
@@ -88,7 +99,7 @@ peer.on('open', id => {
 
 						setTimeout(() => {
 							window.location.href = data.url
-						}, 500)
+						}, 250)
 					}
 				}
 			})

@@ -20,9 +20,9 @@
 					<div id="qrcode"></div>
 				</div>
 				<div
-					class="col-12 col-sm-6 d-flex justify-content-center flex-column align-items-center align-items-sm-start">
-					<p>Status: <span id="status">Generating code</span></p>
-					<p>Connection: <span id="connection">Awaiting</span></p>
+					class="col-12 col-sm-6 d-flex justify-content-start justify-content-sm-center flex-column align-items-center align-items-sm-start">
+					<p><span id="status">Generating code</span></p>
+					<p><span id="connection">Awaiting connection...</span></p>
 				</div>
 			</div>
 		</div>
@@ -34,19 +34,19 @@
 				<div class="row" style="width: 100%">
 					<div class="col-12 d-flex flex-column align-items-center justify-content-center">
 
-						<p>Status: <span id="client-status">Connecting</span></p>
+						<p><span id="client-status" style="text-align: center;">Connecting to peer...</span></p>
 
 						<div id="input-group" style="display: none; width: 100%">
+							<p id="input-error" class="mt-2" style="text-align: center; color: red;"></p>
+
 							<div class="input-group mb-3" style="margin: 0 !important">
 								<span class="input-group-text" id="inputGroup-sizing-sm">URL</span>
-								<input id="url-input" type="text" class="form-control" aria-label="Sizing example input"
-									aria-describedby="inputGroup-sizing-sm">
+								<input id="url-input" type="text" class="form-control" aria-label=""
+									aria-describedby="inputGroup-sizing-sm" placeholder="https://google.com/">
 							</div>
-
-							<br />
-
+							<br>
 							<div class="d-grid gap-2">
-								<button id="redirect-btn" class="btn btn-primary" type="button">Redirect</button>
+								<button id="redirect-btn" class="btn btn-dark" type="button">Redirect</button>
 							</div>
 						</div>
 
